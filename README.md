@@ -12,7 +12,7 @@
 * If you don't have traning data(including convdata, vismap, txt, exr, png), you can download from BaiduYun or generate data using the code from https://github.com/papagina/HairNet_DataSetGeneration.  
 * Besides, there is a subfolder 'index' in folder 'data'. The files in 'index' are list.txt, train txt and test.txt. The content in the above files is the index, such as 'strands00025_00409_10000_v0'. If you choose to generate data using the code from https://github.com/papagina/HairNet_DataSetGeneration, you should generate list.txt, train.txt and test.txt by yourself.
 
-## train
+## Train
 * **Note: this implementation only accounts for position loss and curvature loss.**  
 * The arguments of training are mode and project path.  
 * An example bash to run this programme: ```python src/main.py --mode train --path '/home/albertren/Workspace/HairNet/HairNet-ren'```   
@@ -24,7 +24,7 @@ Batch size: 32
 Learning rate: 1e-4(after 250 epochs divided by 2)  
 Optimization: Adam  
 
-## Testing
+## Test
 * The arguments of training are mode, project path and weight path.  
 * An example bash to run this programme: ```python src/main.py --mode test --path '/home/albertren/Workspace/HairNet/HairNet-ren' --weight '/home/albertren/Workspace/HairNet/HairNet-ren/weight/000001_weight.pt'```  
 
