@@ -29,4 +29,6 @@ Optimization: Adam
 * The arguments of training are mode, project path and weight path.  
 * An example bash to run this programme: ```python src/main.py --mode test --path '/home/albertren/Workspace/HairNet/HairNet-ren' --weight '/home/albertren/Workspace/HairNet/HairNet-ren/weight/000001_weight.pt'```  
 
+## Acknowledgement
+Thank [ZZM](https://github.com/TneitaP) for helping me train thie neural network on GPU machine and give me help in daily research.
 
