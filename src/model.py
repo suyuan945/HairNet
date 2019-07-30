@@ -27,13 +27,13 @@ class Net(nn.Module):
         self.conv8 = nn.Conv2d(512, 512, 3, 1, 1)
         # MLP
         # Position
-        self.branch1_fc1 = nn.Linear(512*32*32, 512)
-        self.branch1_fc2 = nn.Linear(512, 512)
-        self.branch1_fc3 = nn.Linear(512, 32*32*300)
+        self.branch1_fc1 = nn.Linear(512*32*32, 32)
+        self.branch1_fc2 = nn.Linear(32, 32)
+        self.branch1_fc3 = nn.Linear(32, 32*32*300)
         # Curvature
-        self.branch2_fc1 = nn.Linear(512*32*32, 512)
-        self.branch2_fc2 = nn.Linear(512, 512)
-        self.branch2_fc3 = nn.Linear(512, 32*32*100)
+        self.branch2_fc1 = nn.Linear(512*32*32, 32)
+        self.branch2_fc2 = nn.Linear(32, 32)
+        self.branch2_fc3 = nn.Linear(32, 32*32*100)
         
     def forward(self, x):
         # encoder
@@ -133,9 +133,9 @@ def train(root_dir):
                 param_group['lr'] = LR/2.0
         for j, data in enumerate(train_loader, 0):
             img, convdata, visweight = data
-            img.cuda()
-            convdata.cuda()
-            visweight.cuda()
+            img = img.cuda()
+            convdata = convdata.cuda()
+            visweight = visweight.cuda()
             # img (batch_size, 3, 256, 256)     
             # convdata (batch_size, 100, 4, 32, 32)
             # visweight (batch_size, 100, 32, 32)
@@ -187,9 +187,9 @@ def test(root_dir, weight_path):
     print('Testing...')
     for i, data in enumerate(test_loader, 0):
         img, convdata, visweight = data
-        img.cuda()
-        convdata.cuda()
-        visweight.cuda()
+        img = img.cuda()
+        convdata = convdata.cuda()
+        visweight = visweight.cuda()
         output = net(img)
         pos = pos_error(output, convdata)
         cur = cur_error(output, convdata)
