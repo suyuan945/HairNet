@@ -117,6 +117,10 @@ def train(root_dir):
     EPOCH = 500
     BATCH_SIZE = 32
     LR = 1e-4
+    # set parameter of log
+    PRINT_STEP = 10 # batch
+    LOG_STEP = 100 # batch
+    WEIGHT_STEP = 50 # epoch
     # load data
     print('Setting Dataset and DataLoader...')
     train_data = HairNetDataset(project_dir=root_dir,train_flag=1,noise_flag=1)
@@ -143,19 +147,21 @@ def train(root_dir):
             # zero the parameter gradients
             optimizer.zero_grad()
             output = net(img) #img (batch_size, 100, 4, 32, 32)
-            loss = loss(output, convdata, visweight)
-            epoch_loss += loss.item()
+            my_loss = loss(output, convdata, visweight)
+            epoch_loss += my_
+loss.item()
             loss.backward()
             optimizer.step()
-            if (j+1)%100 == 0:
+            if (j+1)%PRINT_STEP == 0:
                 print('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(loss.item()))
+            if (j+1)%LOG_STEP == 0:
                 if not os.path.exists(project_dir+'/log.txt'):
                     with open(root_dir+'/log.txt', 'w') as f:
                         f.write('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(loss.item()) + '\n')    
                 else:
                     with open(root_dir+'/log.txt', 'a') as f:
                         f.write('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(loss.item()) + '\n')        
-        if (i+1)%50 == 0:       
+        if (i+1)%WEIGHT_STEP == 0:       
             save_path = root_dir + '/weight/' + str(i+1).zfill(6) + '_weight.pt'
             torch.save(net.state_dict(), save_path)
         loss_list.append(epoch_loss)
