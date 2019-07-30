@@ -5,7 +5,8 @@
 
 ## Requirement
 * pytorch  
-* opencv
+* opencv  
+* matplotlib
 
 ## Preparation
 * Before you train or test HairNet, you must make sure all convdata files are in the subfolder 'convdata' and other data files(including vismap, txt, exr, png) are in the subfolder 'data'.  

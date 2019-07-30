@@ -109,6 +109,9 @@ def train(root_dir):
     # build model
     print('Initializing Network...')
     net = Net()
+    net.cuda()
+    loss = MyLoss()
+    loss.cuda()
     # set hyperparameter
     EPOCH = 500
     BATCH_SIZE = 32
@@ -119,14 +122,19 @@ def train(root_dir):
     train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE)
     # set optimizer    
     optimizer = optim.Adam(net.parameters(), lr=LR)
+    loss_list=[]
     print('Training...')
     for i in range(EPOCH):
+        epoch_loss = 0.0
         # change learning rate when epoch equals 250
         if i == 250:
             for param_group in optimizer.param_groups:
                 param_group['lr'] = LR/2.0
         for j, data in enumerate(train_loader, 0):
             img, convdata, visweight = data
+            img.cuda()
+            convdata.cuda()
+            visweight.cuda()
             # img (batch_size, 3, 256, 256)     
             # convdata (batch_size, 100, 4, 32, 32)
             # visweight (batch_size, 100, 32, 32)
@@ -134,10 +142,10 @@ def train(root_dir):
             # zero the parameter gradients
             optimizer.zero_grad()
             output = net(img) #img (batch_size, 100, 4, 32, 32)
-            loss = MyLoss()
             loss = loss(output, convdata, visweight)
+            epoch_loss += loss.item()
             loss.backward()
-            ptimizer.step()
+            optimizer.step()
             if (j+1)%100 == 0:
                 print('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(loss.item()))
                 if not os.path.exists(project_dir+'/log.txt'):
@@ -149,6 +157,12 @@ def train(root_dir):
         if (i+1)%50 == 0:       
             save_path = root_dir + '/weight/' + str(i+1).zfill(6) + '_weight.pt'
             torch.save(net.state_dict(), save_path)
+        loss_list.append(epoch_loss)
+    print('Finish...')
+    plt.plot(loss_list)
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.savefig(root_dir + 'loss.png')
 
 
 def test(root_dir, weight_path):
@@ -157,6 +171,11 @@ def test(root_dir, weight_path):
     # load model
     print('Building Network...')
     net = Net()
+    net.cuda()
+    pos_error = MyPosEvaluation()
+    pos_error.cuda()
+    cur_error = MyCurEvaluation()
+    cur_error.cuda()
     print('Loading Network...')
     net.load_state_dict(torch.load(weight_path))
     net.eval()
@@ -164,15 +183,15 @@ def test(root_dir, weight_path):
     test_data = HairNetDataset(project_dir=root_dir,train_flag=0,noise_flag=0)
     test_loader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE)
     # load testing data
-    # test (error)
-    pos_loss = MyPosEvaluation()
-    cur_loss = MyCurEvaluation()
     print('Testing...')
     for i, data in enumerate(test_loader, 0):
         img, convdata, visweight = data
+        img.cuda()
+        convdata.cuda()
+        visweight.cuda()
         output = net(img)
-        pos = pos_loss(output, convdata)
-        cur = cur_loss(output, convdata)
+        pos = pos_error(output, convdata)
+        cur = cur_error(output, convdata)
         print(str(BATCH_SIZE*(i+1)) + '/' + str(len(test_data)) + ', Position loss: ' + str(pos.item()) + ', Curvature loss: ' + str(cur.item()))
 
 
