@@ -26,7 +26,6 @@ def gasuss_noise(img, mean=0, var=0.001):
 # R_x, R_y, R_z, X, Y, Z
 # R_vec = (R_x, R_y, R_z), reshape->(3, 1)
 # T_vec = (X, Y, Z), reshape->(3, 1)
-
 def gen_RT_matrix(path):
     with open(path, 'r') as f:
         lines = f.readlines()

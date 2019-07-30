@@ -11,7 +11,6 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from dataloader import HairNetDataset
 
-
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -69,6 +68,7 @@ class Net(nn.Module):
         x = [branch1_x, branch2_x]
         return torch.cat(x, 2) # (batch_size, 100, 4, 32, 32)
 
+
 class MyLoss(nn.Module):
     def __init__(self):
         super(MyLoss, self).__init__()
@@ -81,6 +81,7 @@ class MyLoss(nn.Module):
                 cur_loss += (visweight[:,:,i,j].reshape(1,-1).mm(torch.pow((convdata[:,:,3,i,j]-output[:,:,3,i,j]),2).reshape(-1, 1))).sum()
         # print(pos_loss/1024.0, cur_loss/1024.0)       
         return pos_loss/1024.0 + cur_loss/1024.0
+
 
 class MyPosEvaluation(nn.Module):
     def __init__(self):
