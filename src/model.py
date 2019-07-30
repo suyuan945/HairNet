@@ -148,8 +148,7 @@ def train(root_dir):
             optimizer.zero_grad()
             output = net(img) #img (batch_size, 100, 4, 32, 32)
             my_loss = loss(output, convdata, visweight)
-            epoch_loss += my_
-loss.item()
+            epoch_loss += my_loss.item()
             loss.backward()
             optimizer.step()
             if (j+1)%PRINT_STEP == 0:
