@@ -149,17 +149,17 @@ def train(root_dir):
             output = net(img) #img (batch_size, 100, 4, 32, 32)
             my_loss = loss(output, convdata, visweight)
             epoch_loss += my_loss.item()
-            loss.backward()
+            my_loss.backward()
             optimizer.step()
             if (j+1)%PRINT_STEP == 0:
-                print('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(loss.item()))
+                print('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(my_loss.item()))
             if (j+1)%LOG_STEP == 0:
                 if not os.path.exists(project_dir+'/log.txt'):
                     with open(root_dir+'/log.txt', 'w') as f:
-                        f.write('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(loss.item()) + '\n')    
+                        f.write('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(my_loss.item()) + '\n')    
                 else:
                     with open(root_dir+'/log.txt', 'a') as f:
-                        f.write('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(loss.item()) + '\n')        
+                        f.write('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(my_loss.item()) + '\n')        
         if (i+1)%WEIGHT_STEP == 0:       
             save_path = root_dir + '/weight/' + str(i+1).zfill(6) + '_weight.pt'
             torch.save(net.state_dict(), save_path)
