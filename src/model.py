@@ -154,7 +154,7 @@ def train(root_dir):
             if (j+1)%PRINT_STEP == 0:
                 print('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(my_loss.item()))
             if (j+1)%LOG_STEP == 0:
-                if not os.path.exists(project_dir+'/log.txt'):
+                if not os.path.exists(root_dir+'/log.txt'):
                     with open(root_dir+'/log.txt', 'w') as f:
                         f.write('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(my_loss.item()) + '\n')    
                 else:
