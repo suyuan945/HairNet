@@ -9,7 +9,7 @@
 
 ## Preparation
 * Before you train or test HairNet, you must make sure all convdata files are in the subfolder 'convdata' and other data files(including vismap, txt, exr, png) are in the subfolder 'data'.  
-* If you don't have traning data(including convdata, vismap, txt, exr, png), you can download from BaiduYun or generate data using the code from https://github.com/papagina/HairNet_DataSetGeneration.  
+* If you don't have traning data(including convdata, vismap, txt, exr, png), you can download from BaiduYun(https://pan.baidu.com/s/1CtWSRARsdUX_xO-2IjTM1w, password: ezh6) or generate data using the code from https://github.com/papagina/HairNet_DataSetGeneration.  
 * Besides, there is a subfolder 'index' in folder 'data'. The files in 'index' are list.txt, train txt and test.txt. The content in the above files is the index, such as 'strands00025_00409_10000_v0'. If you choose to generate data using the code from https://github.com/papagina/HairNet_DataSetGeneration, you should generate list.txt, train.txt and test.txt by yourself.
 
 ## Train
