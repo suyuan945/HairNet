@@ -22,7 +22,7 @@
 * Hyperparameters are all setted according to the paper of HairNet.  
 Epoch: 100 (origin: 500)  
 Batch size: 32  
-Learning rate: 1e-4(divided by 2 per 5 epochs, we change this setting according to our experiment)  
+Learning rate: 1e-4(divided by 2 per 10 epochs, we change this setting according to our experiment)  
 Optimization: Adam  
 
 ## Test

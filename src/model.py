@@ -121,7 +121,7 @@ def train(root_dir):
     PRINT_STEP = 10 # batch
     LOG_STEP = 100 # batch
     WEIGHT_STEP = 5 # epoch
-    LR_STEP = 5 # change learning rate
+    LR_STEP = 10 # change learning rate
     # load data
     print('Setting Dataset and DataLoader...')
     train_data = HairNetDataset(project_dir=root_dir,train_flag=1,noise_flag=1)
