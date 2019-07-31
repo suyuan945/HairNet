@@ -2,6 +2,7 @@
 Copyright@ Qiao-Mu(Albert) Ren. 
 All Rights Reserved.
 This is the code of HairNet.
+Last modified by rqm @22:40, July 31, 2019
 '''
 import argparse
 from model import train, test

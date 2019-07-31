@@ -17,12 +17,12 @@
 * **Note: this implementation only accounts for position loss and curvature loss.**  
 * The arguments of training are mode and project path.  
 * An example bash to run this programme: ```python src/main.py --mode train --path '/home/albertren/Workspace/HairNet/HairNet-ren'```   
-* Weights of Neural Network(about 3.0GB) will be saved in the subfolder 'weight' per 50 epochs.  
+* Weights of Neural Network will be saved in the subfolder 'weight' per 5 epochs.  
 * Log will be saved in Log.txt per 100 batches.  
 * Hyperparameters are all setted according to the paper of HairNet.  
-Epoch: 500  
+Epoch: 100 (origin: 500)  
 Batch size: 32  
-Learning rate: 1e-4(after 250 epochs divided by 2)  
+Learning rate: 1e-4(divided by 2 per 5 epochs, we change this setting according to our experiment)  
 Optimization: Adam  
 
 ## Test

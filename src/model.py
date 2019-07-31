@@ -114,27 +114,29 @@ def train(root_dir):
     loss = MyLoss()
     loss.cuda()
     # set hyperparameter
-    EPOCH = 500
+    EPOCH = 100
     BATCH_SIZE = 32
     LR = 1e-4
     # set parameter of log
     PRINT_STEP = 10 # batch
     LOG_STEP = 100 # batch
-    WEIGHT_STEP = 50 # epoch
+    WEIGHT_STEP = 5 # epoch
+    LR_STEP = 5 # change learning rate
     # load data
     print('Setting Dataset and DataLoader...')
     train_data = HairNetDataset(project_dir=root_dir,train_flag=1,noise_flag=1)
     train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE)
     # set optimizer    
     optimizer = optim.Adam(net.parameters(), lr=LR)
-    loss_list=[]
+    loss_list = []
     print('Training...')
     for i in range(EPOCH):
         epoch_loss = 0.0
-        # change learning rate when epoch equals 250
-        if i == 250:
+        # change learning rate
+        if (i+1)%LR_STEP == 0:
             for param_group in optimizer.param_groups:
-                param_group['lr'] = LR/2.0
+                current_lr = param_group['lr']
+                param_group['lr'] = current_lr * 0.5
         for j, data in enumerate(train_loader, 0):
             img, convdata, visweight = data
             img = img.cuda()
