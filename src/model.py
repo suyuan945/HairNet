@@ -110,17 +110,17 @@ def train(root_dir):
     # build model
     print('Initializing Network...')
     net = Net()
-    net.cuda()
+    # net.cuda()
     loss = MyLoss()
-    loss.cuda()
+    # loss.cuda()
     # set hyperparameter
-    EPOCH = 100
+    EPOCH = 2
     BATCH_SIZE = 32
     LR = 1e-4
     # set parameter of log
-    PRINT_STEP = 10 # batch
-    LOG_STEP = 100 # batch
-    WEIGHT_STEP = 5 # epoch
+    PRINT_STEP = 1 # batch
+    LOG_STEP = 1 # batch
+    WEIGHT_STEP = 1 # epoch
     LR_STEP = 10 # change learning rate
     # load data
     print('Setting Dataset and DataLoader...')
@@ -139,9 +139,9 @@ def train(root_dir):
                 param_group['lr'] = current_lr * 0.5
         for j, data in enumerate(train_loader, 0):
             img, convdata, visweight = data
-            img = img.cuda()
-            convdata = convdata.cuda()
-            visweight = visweight.cuda()
+            # img = img.cuda()
+            # convdata = convdata.cuda()
+            # visweight = visweight.cuda()
             # img (batch_size, 3, 256, 256)     
             # convdata (batch_size, 100, 4, 32, 32)
             # visweight (batch_size, 100, 32, 32)
@@ -179,11 +179,11 @@ def test(root_dir, weight_path):
     # load model
     print('Building Network...')
     net = Net()
-    net.cuda()
+    # net.cuda()
     pos_error = MyPosEvaluation()
-    pos_error.cuda()
+    # pos_error.cuda()
     cur_error = MyCurEvaluation()
-    cur_error.cuda()
+    # cur_error.cuda()
     print('Loading Network...')
     net.load_state_dict(torch.load(weight_path))
     net.eval()
@@ -194,9 +194,9 @@ def test(root_dir, weight_path):
     print('Testing...')
     for i, data in enumerate(test_loader, 0):
         img, convdata, visweight = data
-        img = img.cuda()
-        convdata = convdata.cuda()
-        visweight = visweight.cuda()
+        # img = img.cuda()
+        # convdata = convdata.cuda()
+        # visweight = visweight.cuda()
         output = net(img)
         pos = pos_error(output, convdata)
         cur = cur_error(output, convdata)
