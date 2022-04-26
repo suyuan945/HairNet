@@ -9,7 +9,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from dataloader import HairNetDataset
+
+from .dataloader import HairNetDataset
 
 class Net(nn.Module):
     def __init__(self):
@@ -103,103 +104,3 @@ class MyCurEvaluation(nn.Module):
             for j in range(0,32):
                 loss += torch.mean(torch.abs(convdata[:,:,3,i,j]-output[:,:,3,i,j]))
         return loss/1024.0
-
-
-def train(root_dir):
-    print('This is the programme of training.')
-    # build model
-    print('Initializing Network...')
-    net = Net()
-    net.cuda()
-    loss = MyLoss()
-    loss.cuda()
-    # set hyperparameter
-    EPOCH = 100
-    BATCH_SIZE = 32
-    LR = 1e-4
-    # set parameter of log
-    PRINT_STEP = 10 # batch
-    LOG_STEP = 100 # batch
-    WEIGHT_STEP = 5 # epoch
-    LR_STEP = 10 # change learning rate
-    # load data
-    print('Setting Dataset and DataLoader...')
-    train_data = HairNetDataset(project_dir=root_dir,train_flag=1,noise_flag=1)
-    train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE)
-    # set optimizer    
-    optimizer = optim.Adam(net.parameters(), lr=LR)
-    loss_list = []
-    print('Training...')
-    for i in range(EPOCH):
-        epoch_loss = 0.0
-        # change learning rate
-        if (i+1)%LR_STEP == 0:
-            for param_group in optimizer.param_groups:
-                current_lr = param_group['lr']
-                param_group['lr'] = current_lr * 0.5
-        for j, data in enumerate(train_loader, 0):
-            img, convdata, visweight = data
-            img = img.cuda()
-            convdata = convdata.cuda()
-            visweight = visweight.cuda()
-            # img (batch_size, 3, 256, 256)     
-            # convdata (batch_size, 100, 4, 32, 32)
-            # visweight (batch_size, 100, 32, 32)
-
-            # zero the parameter gradients
-            optimizer.zero_grad()
-            output = net(img) #img (batch_size, 100, 4, 32, 32)
-            my_loss = loss(output, convdata, visweight)
-            epoch_loss += my_loss.item()
-            my_loss.backward()
-            optimizer.step()
-            if (j+1)%PRINT_STEP == 0:
-                print('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(my_loss.item()))
-            if (j+1)%LOG_STEP == 0:
-                if not os.path.exists(root_dir+'/log.txt'):
-                    with open(root_dir+'/log.txt', 'w') as f:
-                        f.write('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(my_loss.item()) + '\n')    
-                else:
-                    with open(root_dir+'/log.txt', 'a') as f:
-                        f.write('epoch: ' + str(i+1) + ', ' + str(BATCH_SIZE*(j+1)) + '/' + str(len(train_data)) + ', loss: ' + str(my_loss.item()) + '\n')        
-        if (i+1)%WEIGHT_STEP == 0:       
-            save_path = root_dir + '/weight/' + str(i+1).zfill(6) + '_weight.pt'
-            torch.save(net.state_dict(), save_path)
-        loss_list.append(epoch_loss)
-    print('Finish...')
-    plt.plot(loss_list)
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.savefig(root_dir + 'loss.png')
-
-
-def test(root_dir, weight_path):
-    print('This is the programme of testing.')
-    BATCH_SIZE = 32
-    # load model
-    print('Building Network...')
-    net = Net()
-    net.cuda()
-    pos_error = MyPosEvaluation()
-    pos_error.cuda()
-    cur_error = MyCurEvaluation()
-    cur_error.cuda()
-    print('Loading Network...')
-    net.load_state_dict(torch.load(weight_path))
-    net.eval()
-    print('Loading Dataset...')
-    test_data = HairNetDataset(project_dir=root_dir,train_flag=0,noise_flag=0)
-    test_loader = DataLoader(dataset=test_data, batch_size=BATCH_SIZE)
-    # load testing data
-    print('Testing...')
-    for i, data in enumerate(test_loader, 0):
-        img, convdata, visweight = data
-        img = img.cuda()
-        convdata = convdata.cuda()
-        visweight = visweight.cuda()
-        output = net(img)
-        pos = pos_error(output, convdata)
-        cur = cur_error(output, convdata)
-        print(str(BATCH_SIZE*(i+1)) + '/' + str(len(test_data)) + ', Position loss: ' + str(pos.item()) + ', Curvature loss: ' + str(cur.item()))
-
-
