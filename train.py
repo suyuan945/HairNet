@@ -31,15 +31,8 @@ def get_args():
 
 
 def train(model, dataloader, optimizer, device):
-    loss_list = []
-    epoch_loss = 0.0
-    # change learning rate
-    if (i+1) == 0:
-        for param_group in optimizer.param_groups:
-            current_lr = param_group['lr']
-            param_group['lr'] = current_lr * 0.5
-
-    for j, data in enumerate(dataloader, 0):
+    model.train()
+    for i, data in enumerate(dataloader, 0):
         img, convdata, visweight = data
         img, convdata, visweight = img.to(device), convdata.to(device), visweight.to(device)
         # img (bs, 3, 256, 256); convdata (bs, 100, 4, 32, 32); visweight (bs, 100, 32, 32)
@@ -50,11 +43,6 @@ def train(model, dataloader, optimizer, device):
         my_loss.backward()
         optimizer.zero_grad()
         optimizer.step()
-
-        # Logging
-        epoch_loss += my_loss.item()
-        loss_list.append(my_loss.item())
-    loss_list.append(epoch_loss)
 
     return my_loss
 
